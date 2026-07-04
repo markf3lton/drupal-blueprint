@@ -1,0 +1,32 @@
+# Tugboat configuration for drupal-blueprint.
+# https://docs.tugboatqa.com/starter-configs/tutorials/drupal-10/
+#
+# This is a from-scratch kickstart project (no existing database or config
+# export to import), so every preview installs a fresh Standard-profile
+# Drupal site using Tugboat's known, non-sensitive default DB credentials.
+services:
+  database:
+    image: tugboatqa/mariadb:11.8
+    commands:
+      build: []
+
+  php:
+    image: tugboatqa/php:8.4-apache
+    default: true
+    depends: database
+
+    commands:
+      init:
+        - docker-php-ext-install opcache
+        - a2enmod headers rewrite
+        - ln -snf "${TUGBOAT_ROOT}/web" "${DOCROOT}"
+
+      build:
+        - composer install --optimize-autoloader
+        - >-
+          vendor/bin/drush site:install standard --yes
+          --db-url=mysql://tugboat:tugboat@database:3306/tugboat
+          --site-name="Drupal Blueprint"
+          --account-name=admin
+          --account-pass=admin
+        - vendor/bin/drush cache:rebuild
