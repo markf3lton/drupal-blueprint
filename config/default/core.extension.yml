@@ -13,17 +13,28 @@ module:
   contextual: 0
   datetime: 0
   dblog: 0
+  dynamic_entity_reference: 0
   dynamic_page_cache: 0
   editor: 0
+  entity: 0
   field: 0
   field_ui: 0
   file: 0
   filter: 0
+  flexible_permissions: 0
+  group: 0
   help: 0
   image: 0
   layout_builder: 0
   layout_discovery: 0
   link: 0
+  lms: 0
+  lms_answer_plugins: 0
+  lms_certificate: 0
+  lms_certificate_entity: 0
+  lms_classes: 0
+  lms_xapi: 0
+  lms_yaml: 0
   menu_link_content: 0
   menu_ui: 0
   mysql: 0
@@ -38,6 +49,7 @@ module:
   text: 0
   update: 0
   user: 0
+  views_bulk_operations: 0
   views_ui: 0
   http_cache_control: 1
   views: 10
