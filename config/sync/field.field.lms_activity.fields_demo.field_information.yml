@@ -12,7 +12,7 @@ id: lms_activity.fields_demo.field_information
 field_name: field_information
 entity_type: lms_activity
 bundle: fields_demo
-label: 'Tekst informacyjny'
+label: 'Additional Information'
 description: ''
 required: false
 translatable: false

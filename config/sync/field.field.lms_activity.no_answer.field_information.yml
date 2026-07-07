@@ -11,7 +11,7 @@ id: lms_activity.no_answer.field_information
 field_name: field_information
 entity_type: lms_activity
 bundle: no_answer
-label: 'Tekst informacyjny'
+label: 'Additional Information'
 description: ''
 required: false
 translatable: false

@@ -2,7 +2,10 @@ uuid: ed8cfabf-a9ba-4b5c-bcc6-1bb397a1895f
 langcode: en
 status: true
 dependencies:
+  config:
+    - filter.format.filtered_html
   module:
+    - filter
     - group
     - lms
     - system
@@ -21,4 +24,5 @@ permissions:
   - 'create lms_lesson entities'
   - 'edit lms_activity entities'
   - 'edit lms_lesson entities'
+  - 'use text format filtered_html'
   - 'view the administration theme'
