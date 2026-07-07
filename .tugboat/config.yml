@@ -1,14 +1,12 @@
 # Tugboat configuration for drupal-blueprint.
 # https://docs.tugboatqa.com/starter-configs/tutorials/drupal-10/
 #
-# This is a from-scratch kickstart project (no existing database or config
-# export to import), so every preview installs a fresh Standard-profile
-# Drupal site using Tugboat's known, non-sensitive default DB credentials.
+# Previews import the baseline demo database from .tugboat/database.sql.gz
+# on every full rebuild (init), then bring code/config up to date on every
+# build. To refresh the baseline: ddev export-db --file=.tugboat/database.sql.gz
 services:
   database:
     image: tugboatqa/mariadb:11.8
-    commands:
-      build: []
 
   php:
     image: tugboatqa/php:8.4-apache
@@ -19,14 +17,26 @@ services:
       init:
         - docker-php-ext-install opcache
         - a2enmod headers rewrite
+        # MariaDB's TLS defaults break the mysql CLI client otherwise.
+        # https://docs.tugboatqa.com/troubleshooting/mysql-ssl-disabled/index.html
+        - |
+          cat > /etc/my.cnf <<'EOF'
+          [client]
+          skip-ssl = true
+          EOF
         - ln -snf "${TUGBOAT_ROOT}/web" "${DOCROOT}"
+        # Wait for the database container before importing.
+        - |
+          echo "Waiting for database..."
+          until mysql -h database -u tugboat -ptugboat -e "SELECT 1;" &>/dev/null; do
+            sleep 2
+          done
+          echo "Database is ready!"
+        # Only runs on a full rebuild (init), not on every routine build/update.
+        - zcat "${TUGBOAT_ROOT}/.tugboat/database.sql.gz" | mysql -h database -u tugboat -ptugboat --ssl=false tugboat
 
       build:
         - composer install --optimize-autoloader
-        - >-
-          vendor/bin/drush site:install standard --yes
-          --db-url=mysql://tugboat:tugboat@database:3306/tugboat
-          --site-name="Drupal Blueprint"
-          --account-name=admin
-          --account-pass=admin
+        - vendor/bin/drush updatedb -y
+        - vendor/bin/drush config:import -y
         - vendor/bin/drush cache:rebuild

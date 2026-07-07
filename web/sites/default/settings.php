@@ -861,6 +861,12 @@ if (getenv('IS_DDEV_PROJECT') == 'true' && file_exists(__DIR__ . '/settings.ddev
   include __DIR__ . '/settings.ddev.php';
 }
 
+// Tugboat settings include
+$tugboat_settings = getenv('TUGBOAT_ROOT') . '/.tugboat/settings.local.php';
+if (file_exists($tugboat_settings)) {
+    include $tugboat_settings;
+}
+
 /**
  * Load local development override configuration, if available.
  *
